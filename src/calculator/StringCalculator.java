@@ -1,10 +1,8 @@
 package calculator;
 
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import java.util.stream.*;
+import java.util.stream.Stream;
 
 public class StringCalculator {
 
@@ -12,16 +10,20 @@ public class StringCalculator {
         if (isBlank(text)) {
             return 0;
         }
-
-        return sum(toInts(split(text)));
+        
+        return Stream.of(split(text))
+        	.mapToInt(v -> toPositive(v))
+        	.sum();
     }
 
     private boolean isBlank(String text) {
         return text == null || text.isEmpty();
     }
 
+    /**
+     * 	문자열을 사용자 커스텀 구분자가 있는 것과 없는 것으로 구분해서 반환한다.
+     */
     private String[] split(String text) {
-
         Matcher m = Pattern.compile("//(.)\n(.*)").matcher(text);
         if (m.find()) {
             String customDelimeter = m.group(1);
@@ -31,16 +33,6 @@ public class StringCalculator {
         return text.split(",|:");
     }
 
-    private int[] toInts(String[] values) {
-        // int[] numbers = new int[values.length];
-        // for (int i = 0; i < values.length; i++) {
-        // int number = toPositive(values[i]);
-        // numbers[i] = number;
-        // }
-        // return numbers;
-        return Arrays.stream(values).mapToInt(v -> toPositive(v)).toArray();
-    }
-
     private int toPositive(String value) {
         int number = Integer.parseInt(value);
         if (number < 0) {
@@ -48,13 +40,4 @@ public class StringCalculator {
         }
         return number;
     }
-
-    private int sum(int[] numbers) {
-        // int sum = 0;
-        // for (int number : numbers) {
-        // sum += number;
-        // }
-        // return sum;
-        return Arrays.stream(numbers).sum();
-    }
-}
+} // end of StringCalculator
